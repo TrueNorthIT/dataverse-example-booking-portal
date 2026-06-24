@@ -1,0 +1,220 @@
+/* ── TrueNorth animated logo (provisioning screen) ── */
+
+.tn-logo-wrap {
+  position: relative;
+  width: 8rem;
+  height: 8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tn-logo-box {
+  position: absolute;
+  inset: 0;
+  border-radius: 1.5rem;
+  background: rgba(128, 208, 222, 0.1);
+  opacity: 0;
+  animation: tn-logo-box-appear 500ms ease-out 1450ms forwards;
+}
+
+.tn-logo-shimmer-clip {
+  position: absolute;
+  inset: 0;
+  border-radius: 1.5rem;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.tn-logo-shimmer {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 30%,
+    rgba(128, 208, 222, 0.2) 45%,
+    rgba(255, 255, 255, 0.12) 55%,
+    transparent 70%
+  );
+  transform: translateX(-100%);
+  animation: tn-shimmer-sweep 1.5s ease-in-out 1700ms infinite;
+  pointer-events: none;
+}
+
+.tn-logo-svg {
+  width: 5rem;
+  height: 5rem;
+  color: hsl(var(--primary));
+  position: relative;
+  overflow: visible;
+  animation: tn-logo-pulse 2.5s ease-in-out 2.3s infinite;
+}
+
+.tn-bar {
+  opacity: 0;
+  transform-box: fill-box;
+}
+
+.tn-bar-left {
+  transform: translateX(-200%) translateY(8px) rotate(-1.5deg);
+  animation: tn-brick-from-left 500ms forwards,
+    tn-bar-breathe 2.5s ease-in-out 2.3s infinite;
+}
+
+.tn-bar-right {
+  transform: translateX(200%) translateY(8px) rotate(1.5deg);
+  animation: tn-brick-from-right 500ms forwards,
+    tn-bar-breathe 2.5s ease-in-out 2.3s infinite;
+}
+
+.tn-bar-capstone {
+  transform: translateY(-80px) scaleX(0.92);
+  animation: tn-brick-capstone 550ms forwards,
+    tn-bar-breathe 2.5s ease-in-out 2.3s infinite;
+}
+
+.tn-provision-text {
+  text-align: center;
+  opacity: 0;
+  animation: tn-fade-up 0.5s ease-out 1950ms forwards;
+}
+
+/* ── Keyframes ── */
+
+@keyframes tn-brick-from-left {
+  0% {
+    transform: translateX(-200%) translateY(8px) rotate(-1.5deg);
+    opacity: 0;
+  }
+  18% {
+    opacity: 1;
+  }
+  52% {
+    transform: translateX(3%) translateY(-1px) rotate(0.3deg);
+  }
+  66% {
+    transform: translateX(-0.5%) translateY(0.5px) rotate(0) scaleY(0.96);
+    filter: brightness(1.6);
+  }
+  82% {
+    transform: translateX(0.2%) translateY(-0.3px) rotate(0) scaleY(1.02);
+    filter: brightness(1.05);
+  }
+  100% {
+    transform: translateX(0) translateY(0) rotate(0) scaleY(1);
+    opacity: 1;
+    filter: brightness(1);
+  }
+}
+
+@keyframes tn-brick-from-right {
+  0% {
+    transform: translateX(200%) translateY(8px) rotate(1.5deg);
+    opacity: 0;
+  }
+  18% {
+    opacity: 1;
+  }
+  52% {
+    transform: translateX(-3%) translateY(-1px) rotate(-0.3deg);
+  }
+  66% {
+    transform: translateX(0.5%) translateY(0.5px) rotate(0) scaleY(0.96);
+    filter: brightness(1.6);
+  }
+  82% {
+    transform: translateX(-0.2%) translateY(-0.3px) rotate(0) scaleY(1.02);
+    filter: brightness(1.05);
+  }
+  100% {
+    transform: translateX(0) translateY(0) rotate(0) scaleY(1);
+    opacity: 1;
+    filter: brightness(1);
+  }
+}
+
+@keyframes tn-brick-capstone {
+  0% {
+    transform: translateY(-80px) scaleX(0.92);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  55% {
+    transform: translateY(2px) scaleX(1.01);
+  }
+  68% {
+    transform: translateY(0) scaleX(1) scaleY(0.94);
+    filter: brightness(1.8);
+  }
+  82% {
+    transform: translateY(-1px) scaleX(1) scaleY(1.03);
+    filter: brightness(1.1);
+  }
+  100% {
+    transform: translateY(0) scaleX(1) scaleY(1);
+    opacity: 1;
+    filter: brightness(1);
+  }
+}
+
+@keyframes tn-logo-box-appear {
+  0% {
+    opacity: 0;
+    transform: scale(0.7);
+    box-shadow: 0 0 0 rgba(128, 208, 222, 0);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.06);
+    box-shadow: 0 0 40px rgba(128, 208, 222, 0.45);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+    box-shadow: 0 0 0 rgba(128, 208, 222, 0);
+  }
+}
+
+@keyframes tn-shimmer-sweep {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes tn-logo-pulse {
+  0%,
+  100% {
+    opacity: 1;
+    filter: drop-shadow(0 0 14px rgba(128, 208, 222, 0.35));
+  }
+  50% {
+    opacity: 0.85;
+    filter: drop-shadow(0 0 4px rgba(128, 208, 222, 0.1));
+  }
+}
+
+@keyframes tn-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes tn-bar-breathe {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}

@@ -1,0 +1,109 @@
+<mxfile host="65bd71144e">
+    <diagram id="our-arch" name="Our Architecture (Single Backend)">
+        <mxGraphModel dx="2306" dy="1139" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="700" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="title" value="&lt;b&gt;Architecture: Pure Dataverse Resource App&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=16;" parent="1" vertex="1">
+                    <mxGeometry x="320" y="20" width="360" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="citizen" value="&lt;b&gt;Citizen UI&lt;/b&gt;&lt;br&gt;(React SPA)&lt;br&gt;Auth0 login" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=13;verticalAlign=middle;arcSize=20;" parent="1" vertex="1">
+                    <mxGeometry x="60" y="170" width="160" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="api" value="&lt;b&gt;Contact Portal API&lt;/b&gt;&lt;br&gt;(middleware)&lt;br&gt;&lt;font color=&quot;#047857&quot;&gt;Auth0 JWT → Dataverse&lt;br&gt;scope-based access tiers&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;verticalAlign=middle;arcSize=20;" parent="1" vertex="1">
+                    <mxGeometry x="320" y="155" width="200" height="110" as="geometry"/>
+                </mxCell>
+                <mxCell id="dataverse" value="&lt;b&gt;Dataverse&lt;/b&gt;&lt;br&gt;(D365 Field Service)&lt;br&gt;&lt;font color=&quot;#1e40af&quot;&gt;Single source of truth&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;verticalAlign=middle;arcSize=20;strokeWidth=2;" parent="1" vertex="1">
+                    <mxGeometry x="630" y="160" width="220" height="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="admin" value="&lt;b&gt;Admin Staff&lt;/b&gt;&lt;br&gt;(Council)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=13;verticalAlign=middle;arcSize=20;" parent="1" vertex="1">
+                    <mxGeometry x="60" y="385" width="160" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="board" value="&lt;b&gt;Schedule Board&lt;/b&gt;&lt;br&gt;Gantt · Map · List" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;verticalAlign=middle;arcSize=20;" parent="1" vertex="1">
+                    <mxGeometry x="320" y="390" width="160" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="automate" value="&lt;b&gt;Power Automate&lt;/b&gt;&lt;br&gt;Emails · SMS · Approvals" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;verticalAlign=middle;arcSize=20;" parent="1" vertex="1">
+                    <mxGeometry x="530" y="390" width="170" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="pbi" value="&lt;b&gt;Power BI&lt;/b&gt;&lt;br&gt;Utilisation dashboards" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;verticalAlign=middle;arcSize=20;" parent="1" vertex="1">
+                    <mxGeometry x="750" y="385" width="160" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="copilot" value="&lt;b&gt;Copilot&lt;/b&gt;&lt;br&gt;AI scheduling" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;verticalAlign=middle;arcSize=20;" parent="1" vertex="1">
+                    <mxGeometry x="950" y="385" width="130" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="signalr" value="&lt;b&gt;SignalR&lt;/b&gt;&lt;br&gt;Real-time updates" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;verticalAlign=middle;arcSize=20;" parent="1" vertex="1">
+                    <mxGeometry x="340" y="80" width="130" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;strokeColor=#82b366;" parent="1" source="citizen" target="api" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e1label" value="REST + JWT" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=11;fontColor=#047857;" parent="e1" vertex="1" connectable="0">
+                    <mxGeometry x="-0.1" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="e2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;strokeColor=#6c8ebf;" parent="1" source="api" target="dataverse" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e2label" value="direct read/write" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=11;fontColor=#1e40af;" parent="e2" vertex="1" connectable="0">
+                    <mxGeometry x="-0.1" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="e3" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;strokeColor=#9673a6;" parent="1" source="admin" target="board" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e4" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=1;strokeColor=#6c8ebf;dashed=1;" parent="1" source="dataverse" target="board" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="740" y="310"/>
+                            <mxPoint x="420" y="310"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="e5" style="exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=1;strokeColor=#6c8ebf;dashed=1;" parent="1" source="dataverse" target="automate" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="740" y="310"/>
+                            <mxPoint x="615" y="310"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="e6" style="exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=1;strokeColor=#6c8ebf;dashed=1;" parent="1" source="dataverse" target="pbi" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="740" y="310"/>
+                            <mxPoint x="810" y="310"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="e7" style="exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=1;strokeColor=#6c8ebf;dashed=1;" parent="1" source="dataverse" target="copilot" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="740" y="310"/>
+                            <mxPoint x="985" y="310"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="e8" style="edgeStyle=orthogonalEdgeStyle;rounded=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=1;strokeColor=#82b366;dashed=1;" parent="1" source="signalr" target="citizen" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="140" y="105"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="e8label" value="push" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;fontColor=#047857;" parent="e8" vertex="1" connectable="0">
+                    <mxGeometry x="-0.3" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="success" value="&lt;font color=&quot;#047857&quot;&gt;&lt;b&gt;One source of truth&lt;/b&gt;&lt;br&gt;Citizen bookings land directly in Dataverse.&lt;br&gt;No sync. No duplication. Zero lag.&lt;/font&gt;" style="shape=callout;whiteSpace=wrap;html=1;perimeter=calloutPerimeter;size=15;position=0.3;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;rounded=1;arcSize=10;base=15;" parent="1" vertex="1">
+                    <mxGeometry x="820" y="30" width="230" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="samedata" value="&lt;font color=&quot;#6c8ebf&quot;&gt;same booking data — zero integration&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="530" y="290" width="230" height="20" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>
