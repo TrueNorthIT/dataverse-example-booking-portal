@@ -1,4 +1,4 @@
-# Leeds City Council — Book a Service
+# Leeds City Council — Book a Service - Demo based on the services offered on LCC website
 
 A product-led booking portal for council services, built on Microsoft Dataverse. Citizens browse categories, pick a time slot, and book — all through a modern React frontend that talks to the [Dataverse Contact API](https://github.com/TrueNorthIT/dataverse-contact-api) (`citizenbooking` scope). The API handles authentication (Auth0), authorisation (RBAC + row-level scoping), and proxies all requests to Dataverse. The React app never touches Microsoft's APIs directly.
 
