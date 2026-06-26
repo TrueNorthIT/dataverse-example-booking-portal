@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react"
 import { Link } from "react-router-dom"
+import { useAuth0 } from "@auth0/auth0-react"
 import { isPast, parseISO } from "date-fns"
 import { useMyBookings } from "@/hooks/useMyBookings"
 import { useCancelCitizenBooking } from "@/hooks/useCitizenBookings"
@@ -10,7 +11,7 @@ import { MyBookingCard } from "@/components/citizen/MyBookingCard"
 import { EmptyState } from "@/components/common/EmptyState"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Button } from "@/components/ui/button"
-import { CalendarDays, Search } from "lucide-react"
+import { CalendarDays, LogIn, Search } from "lucide-react"
 import { getCategoryMeta } from "@/lib/categoryMeta"
 import { cn } from "@/lib/utils"
 import { DevHint } from "@/components/common/DevHint"
@@ -28,7 +29,8 @@ function resourceIdOf(b: ExpandedServicebooking): string | undefined {
 export function MyBookingsPage() {
   const [tab, setTab] = useState<Tab>("upcoming")
   const [categoryFilter, setCategoryFilter] = useState<string | null>(null)
-  const { name } = useCurrentUser()
+  const { name, isAuthenticated } = useCurrentUser()
+  const { loginWithRedirect } = useAuth0()
   const { data, isLoading } = useMyBookings()
   const cancelCitizenBooking = useCancelCitizenBooking()
   const { data: statuses } = useBookingStatuses()
@@ -88,6 +90,27 @@ export function MyBookingsPage() {
       underlyingBookingId: booking.tn_booking ?? booking._tn_booking_value,
       cancelStatusId: cancelStatus.bookingstatusid!,
     })
+  }
+
+  if (!isAuthenticated) {
+    return (
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight">My Bookings</h1>
+        </div>
+        <EmptyState
+          icon={CalendarDays}
+          title="Sign in to view your bookings"
+          description="Your upcoming and past bookings appear here once you sign in."
+          action={
+            <Button onClick={() => loginWithRedirect()}>
+              <LogIn className="mr-2 h-4 w-4" />
+              Sign in
+            </Button>
+          }
+        />
+      </div>
+    )
   }
 
   return (

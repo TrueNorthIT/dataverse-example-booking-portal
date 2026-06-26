@@ -33,4 +33,12 @@ describe("CitizenHeader", () => {
     const logout = useAuth0().logout
     expect(logout).toHaveBeenCalled()
   })
+
+  it("shows a Sign in button for an anonymous visitor", async () => {
+    renderWithProviders(<CitizenHeader />, { auth0: { isAuthenticated: false } })
+    expect(screen.queryByText("TC")).not.toBeInTheDocument()
+    const signIn = screen.getByRole("button", { name: /Sign in/ })
+    await userEvent.click(signIn)
+    expect(useAuth0().loginWithRedirect).toHaveBeenCalled()
+  })
 })

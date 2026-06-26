@@ -1,4 +1,3 @@
-import { useEffect } from "react"
 import { useAuth0 } from "@auth0/auth0-react"
 import { Skeleton } from "@/components/ui/skeleton"
 
@@ -14,15 +13,12 @@ function LoadingSpinner() {
 }
 
 export function AuthGuard({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated, isLoading, error, loginWithRedirect } = useAuth0()
+  const { isLoading, error } = useAuth0()
 
-  useEffect(() => {
-    if (!isLoading && !isAuthenticated && !error) {
-      loginWithRedirect()
-    }
-  }, [isLoading, isAuthenticated, error, loginWithRedirect])
-
-  if (isLoading || !isAuthenticated) {
+  // Public-browse mode: anonymous visitors can explore the portal. We only wait
+  // for Auth0 to finish initialising — we don't force a login redirect. The
+  // final "book" action is what gates on auth (see CitizenBookingForm).
+  if (isLoading) {
     return <LoadingSpinner />
   }
 

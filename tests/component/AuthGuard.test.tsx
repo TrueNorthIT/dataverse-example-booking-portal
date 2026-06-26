@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from "vitest"
 import { renderHook } from "@testing-library/react"
-import { renderWithProviders, screen, setAuth0State, waitFor } from "../setup/test-utils"
+import { renderWithProviders, screen, setAuth0State } from "../setup/test-utils"
 import { AuthGuard, useCurrentUser } from "@/components/auth/AuthGuard"
 
 describe("AuthGuard", () => {
@@ -26,7 +26,7 @@ describe("AuthGuard", () => {
     expect(screen.getByText("protected content")).toBeInTheDocument()
   })
 
-  it("redirects to login (loginWithRedirect) when unauthenticated", async () => {
+  it("renders children for an anonymous visitor (public-browse mode)", () => {
     const loginWithRedirect = vi.fn()
     setAuth0State({ isLoading: false, isAuthenticated: false, loginWithRedirect })
     renderWithProviders(
@@ -34,32 +34,13 @@ describe("AuthGuard", () => {
         <div>protected content</div>
       </AuthGuard>
     )
-    // Shows the spinner (not authenticated) and triggers the redirect effect
-    expect(screen.queryByText("protected content")).not.toBeInTheDocument()
-    await waitFor(() => expect(loginWithRedirect).toHaveBeenCalled())
-  })
-
-  it("does not call loginWithRedirect when an auth error is present", async () => {
-    const loginWithRedirect = vi.fn()
-    setAuth0State({
-      isLoading: false,
-      isAuthenticated: false,
-      error: new Error("boom"),
-      loginWithRedirect,
-    })
-    renderWithProviders(
-      <AuthGuard>
-        <div>protected content</div>
-      </AuthGuard>
-    )
-    // error + not authenticated -> still the spinner branch, but no redirect
+    // Guests can browse — no forced redirect, content renders.
+    expect(screen.getByText("protected content")).toBeInTheDocument()
     expect(loginWithRedirect).not.toHaveBeenCalled()
   })
 
-  it("shows the Authentication Error screen when authenticated but error set", () => {
-    // error branch is only reachable when isAuthenticated is true (passes the
-    // first guard) and error is set.
-    setAuth0State({ isLoading: false, isAuthenticated: true, error: new Error("token expired") })
+  it("shows the Authentication Error screen when an auth error is present", () => {
+    setAuth0State({ isLoading: false, isAuthenticated: false, error: new Error("token expired") })
     renderWithProviders(
       <AuthGuard>
         <div>protected content</div>

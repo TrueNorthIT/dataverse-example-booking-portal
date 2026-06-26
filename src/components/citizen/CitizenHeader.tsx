@@ -1,8 +1,9 @@
 import { NavLink } from "react-router-dom"
 import { useAuth0 } from "@auth0/auth0-react"
-import { Home, CalendarDays, LogOut } from "lucide-react"
+import { Home, CalendarDays, LogOut, LogIn } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useCurrentUser } from "@/components/auth/AuthGuard"
+import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,8 +19,8 @@ const citizenNav = [
 ]
 
 export function CitizenHeader() {
-  const { name, initials, email } = useCurrentUser()
-  const { logout } = useAuth0()
+  const { name, initials, email, isAuthenticated } = useCurrentUser()
+  const { logout, loginWithRedirect } = useAuth0()
 
   return (
     <header className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
@@ -56,33 +57,40 @@ export function CitizenHeader() {
 
         <div className="flex-1" />
 
-        {/* User dropdown */}
-        <DropdownMenu>
-          <DropdownMenuTrigger className="flex items-center gap-2 rounded-full p-0.5 pr-2 transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
-            <div className="flex h-7 w-7 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground">
-              {initials}
-            </div>
-            <span className="hidden md:inline text-sm font-medium">{name}</span>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-56">
-            <DropdownMenuLabel className="font-normal">
-              <div className="flex flex-col space-y-1">
-                <p className="text-sm font-medium">{name}</p>
-                {email && (
-                  <p className="text-xs text-muted-foreground truncate">{email}</p>
-                )}
+        {/* User dropdown (signed in) or Sign in button (anonymous) */}
+        {isAuthenticated ? (
+          <DropdownMenu>
+            <DropdownMenuTrigger className="flex items-center gap-2 rounded-full p-0.5 pr-2 transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+              <div className="flex h-7 w-7 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground">
+                {initials}
               </div>
-            </DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              onClick={() => logout({ logoutParams: { returnTo: window.location.origin } })}
-              className="text-destructive focus:text-destructive"
-            >
-              <LogOut className="mr-2 h-4 w-4" />
-              Sign out
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+              <span className="hidden md:inline text-sm font-medium">{name}</span>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56">
+              <DropdownMenuLabel className="font-normal">
+                <div className="flex flex-col space-y-1">
+                  <p className="text-sm font-medium">{name}</p>
+                  {email && (
+                    <p className="text-xs text-muted-foreground truncate">{email}</p>
+                  )}
+                </div>
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={() => logout({ logoutParams: { returnTo: window.location.origin } })}
+                className="text-destructive focus:text-destructive"
+              >
+                <LogOut className="mr-2 h-4 w-4" />
+                Sign out
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        ) : (
+          <Button size="sm" onClick={() => loginWithRedirect()}>
+            <LogIn className="mr-2 h-4 w-4" />
+            Sign in
+          </Button>
+        )}
       </div>
     </header>
   )

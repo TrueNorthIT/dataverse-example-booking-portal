@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest"
 import { renderWithProviders, screen, userEvent, mockClient, waitFor } from "../setup/test-utils"
+import { useAuth0 } from "@auth0/auth0-react"
 import { CitizenBookingForm } from "@/components/citizen/CitizenBookingForm"
 import type { TimeSlot } from "@/hooks/useAvailability"
 
@@ -61,6 +62,29 @@ describe("CitizenBookingForm", () => {
     expect(mockClient.me.create.mock.calls[0][0]).toBe("servicebooking")
     await waitFor(() => expect(onBooked).toHaveBeenCalledTimes(1))
     expect(toast.success).toHaveBeenCalled()
+  })
+
+  it("blocks an anonymous visitor with a Sign in to book CTA instead of booking", async () => {
+    wireListNoConflict()
+    const user = userEvent.setup()
+    const onBooked = vi.fn()
+    renderWithProviders(
+      <CitizenBookingForm
+        resourceId="res-1"
+        resourceName="Tennis Court 1"
+        slot={makeSlot()}
+        onCancel={vi.fn()}
+        onBooked={onBooked}
+      />,
+      { auth0: { isAuthenticated: false, user: undefined } },
+    )
+
+    expect(screen.queryByRole("button", { name: "Confirm Booking" })).not.toBeInTheDocument()
+    expect(screen.getByText(/browsing as a guest/i)).toBeInTheDocument()
+    await user.click(await screen.findByRole("button", { name: /Sign in to book/ }))
+    expect(useAuth0().loginWithRedirect).toHaveBeenCalled()
+    expect(mockClient.me.create).not.toHaveBeenCalled()
+    expect(onBooked).not.toHaveBeenCalled()
   })
 
   it("uses the notes field as the booking title", async () => {

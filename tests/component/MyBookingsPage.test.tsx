@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest"
 import { renderWithProviders, screen, userEvent, mockClient, setAuth0State, waitFor, within } from "../setup/test-utils"
+import { useAuth0 } from "@auth0/auth0-react"
 import { MyBookingsPage } from "@/pages/citizen/MyBookingsPage"
 import { ServicebookingTnStatus } from "@/types/generated"
 import { toast } from "sonner"
@@ -115,6 +116,15 @@ describe("MyBookingsPage", () => {
     const { container } = renderWithProviders(<MyBookingsPage />)
     expect(screen.getByText(/Viewing bookings for/)).toBeInTheDocument()
     expect(container.querySelectorAll(".animate-pulse").length).toBeGreaterThan(0)
+  })
+
+  it("prompts an anonymous visitor to sign in", async () => {
+    mockData([])
+    renderWithProviders(<MyBookingsPage />, { auth0: { isAuthenticated: false, user: undefined } })
+    expect(screen.getByText("Sign in to view your bookings")).toBeInTheDocument()
+    expect(screen.queryByText(/Viewing bookings for/)).not.toBeInTheDocument()
+    await userEvent.click(screen.getByRole("button", { name: /Sign in/ }))
+    expect(useAuth0().loginWithRedirect).toHaveBeenCalled()
   })
 
   it("shows the empty upcoming state when there are no bookings", async () => {

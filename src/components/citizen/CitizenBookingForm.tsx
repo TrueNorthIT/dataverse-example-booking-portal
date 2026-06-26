@@ -1,7 +1,8 @@
 import { useMemo, useState } from "react"
 import { format, parseISO } from "date-fns"
 import { useQueryClient } from "@tanstack/react-query"
-import { CalendarCheck, X } from "lucide-react"
+import { useAuth0 } from "@auth0/auth0-react"
+import { CalendarCheck, LogIn, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -45,6 +46,7 @@ export function CitizenBookingForm({
   const [selectedAddOns, setSelectedAddOns] = useState<Set<string>>(new Set())
   const [phase, setPhase] = useState<"confirm" | "pay">("confirm")
   const { name } = useCurrentUser()
+  const { isAuthenticated, loginWithRedirect } = useAuth0()
   const queryClient = useQueryClient()
   const createCitizenBooking = useCreateCitizenBooking()
   const { data: statuses } = useBookingStatuses()
@@ -236,15 +238,28 @@ export function CitizenBookingForm({
               </div>
             )}
 
+            {!isAuthenticated && (
+              <p className="rounded-md border border-primary/20 bg-primary/5 px-3 py-2 text-xs text-muted-foreground">
+                You're browsing as a guest. Sign in to confirm this booking.
+              </p>
+            )}
+
             <div className="flex gap-2 justify-end">
               <Button variant="outline" size="sm" onClick={onCancel} disabled={submitting}>
                 Cancel
               </Button>
-              <Button size="sm" onClick={handleConfirm} disabled={submitting}>
-                {submitting
-                  ? requiresPayment ? "Starting payment…" : "Booking…"
-                  : requiresPayment ? `Pay ${formatGBP(amountPence)}` : "Confirm Booking"}
-              </Button>
+              {isAuthenticated ? (
+                <Button size="sm" onClick={handleConfirm} disabled={submitting}>
+                  {submitting
+                    ? requiresPayment ? "Starting payment…" : "Booking…"
+                    : requiresPayment ? `Pay ${formatGBP(amountPence)}` : "Confirm Booking"}
+                </Button>
+              ) : (
+                <Button size="sm" onClick={() => loginWithRedirect()}>
+                  <LogIn className="mr-2 h-4 w-4" />
+                  Sign in to book
+                </Button>
+              )}
             </div>
           </>
         )}
