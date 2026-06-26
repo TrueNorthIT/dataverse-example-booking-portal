@@ -13,7 +13,7 @@ import {
 import { ResourceCard } from "@/components/citizen/ResourceCard"
 import { VenueHireBrowser } from "@/components/citizen/VenueHireBrowser"
 import { Skeleton } from "@/components/ui/skeleton"
-import { ChevronRight } from "lucide-react"
+import { ChevronRight, Info } from "lucide-react"
 import type { Venue } from "@/types/generated"
 import { DevHint } from "@/components/common/DevHint"
 
@@ -94,16 +94,28 @@ export function CategoryPage() {
       ) : isVenueHire ? (
         <VenueHireBrowser rooms={rooms} />
       ) : sortedRooms.length > 0 ? (
-        <div className="grid gap-3 sm:grid-cols-2">
-          {sortedRooms.map(({ resource, distance }) => (
-            <ResourceCard
-              key={resource.bookableresourceid}
-              resource={resource}
-              distance={distance}
-              busyLevel={busynessMap ? (busynessMap.get(resource.bookableresourceid!) ?? "quiet") : undefined}
-            />
-          ))}
-        </div>
+        <>
+          <div className="grid gap-3 sm:grid-cols-2">
+            {sortedRooms.map(({ resource, distance }) => (
+              <ResourceCard
+                key={resource.bookableresourceid}
+                resource={resource}
+                distance={distance}
+                busyLevel={busynessMap ? (busynessMap.get(resource.bookableresourceid!) ?? "quiet") : undefined}
+              />
+            ))}
+          </div>
+          {personaLoc && sortedRooms.some(({ distance }) => distance != null) && (
+            <p className="flex items-start gap-1.5 text-xs text-muted-foreground">
+              <Info className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+              <span>
+                Distances and "nearest first" ordering are illustrative demo data — both your
+                location and the venue locations are hardcoded in this example, not stored in
+                the API yet.
+              </span>
+            </p>
+          )}
+        </>
       ) : (
         <p className="text-muted-foreground py-8 text-center">
           No resources available in this category.

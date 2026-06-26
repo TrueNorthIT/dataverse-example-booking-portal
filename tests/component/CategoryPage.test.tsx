@@ -77,6 +77,15 @@ describe("CategoryPage", () => {
     expect(holt).toHaveAttribute("href", "/book/res-holt")
   })
 
+  it("honestly notes that distances are faked demo data", async () => {
+    mockData()
+    renderCategory()
+    await screen.findByText("Holt Park Active")
+    expect(
+      screen.getByText(/illustrative demo data/i)
+    ).toBeInTheDocument()
+  })
+
   it("shows the empty branch when the category has no resources", async () => {
     mockData([])
     renderCategory()
