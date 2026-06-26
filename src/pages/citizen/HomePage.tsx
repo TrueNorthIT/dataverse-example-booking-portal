@@ -120,38 +120,19 @@ export function HomePage() {
 
       {/* Category grid */}
       {isLoading ? (
-        <div className="space-y-4">
-          <Skeleton className="h-20 rounded-xl" />
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {Array.from({ length: 6 }, (_, i) => (
-              <Skeleton key={i} className="h-44 rounded-xl" />
-            ))}
-          </div>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {Array.from({ length: 6 }, (_, i) => (
+            <Skeleton key={i} className="h-44 rounded-xl" />
+          ))}
         </div>
       ) : filtered.length > 0 ? (
         <div className="space-y-2">
           {q && <h2 className="text-sm font-medium text-muted-foreground">Categories</h2>}
-          {q ? (
-            // While searching, a uniform grid reads best — the result count varies.
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {filtered.map((cat) => (
-                <CategoryCard key={cat.bookableresourcecategoryid} category={cat} />
-              ))}
-            </div>
-          ) : (
-            // Default browse: feature the first service as a full-width banner so
-            // the remaining 6 fill a clean 3-column grid (no orphan card).
-            <div className="space-y-4">
-              <CategoryCard key={filtered[0].bookableresourcecategoryid} category={filtered[0]} featured />
-              {filtered.length > 1 && (
-                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                  {filtered.slice(1).map((cat) => (
-                    <CategoryCard key={cat.bookableresourcecategoryid} category={cat} />
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {filtered.map((cat) => (
+              <CategoryCard key={cat.bookableresourcecategoryid} category={cat} />
+            ))}
+          </div>
         </div>
       ) : matchingResources.length === 0 ? (
         <p className="text-muted-foreground py-8 text-center">

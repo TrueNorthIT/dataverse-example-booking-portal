@@ -48,12 +48,4 @@ describe("CategoryCard", () => {
     )
     expect(screen.getByText("Totally Unknown")).toBeInTheDocument()
   })
-
-  it("renders the featured banner variant with name, description and link", () => {
-    renderWithProviders(<CategoryCard category={makeCategory()} featured resourceCount={3} />)
-    expect(screen.getByText("Library")).toBeInTheDocument()
-    expect(screen.getByText("Reserve a study room")).toBeInTheDocument()
-    expect(screen.getByText("3 locations")).toBeInTheDocument()
-    expect(screen.getByRole("link")).toHaveAttribute("href", "/browse/cat-1")
-  })
 })
