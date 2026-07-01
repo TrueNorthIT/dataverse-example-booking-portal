@@ -2,8 +2,10 @@ import "@testing-library/jest-dom/vitest"
 import { afterEach, vi } from "vitest"
 import { cleanup } from "@testing-library/react"
 
+// Replace the MSAL-backed auth adapter with a mutable mock (driven via
+// setAuthState). This keeps the suite hermetic — no real @azure/msal-* imports.
+vi.mock("@/auth/useAuth", () => import("./auth-mock"))
 // Activate manual mocks (resolved from the root-level __mocks__ folder).
-vi.mock("@auth0/auth0-react")
 vi.mock("@truenorth-it/dataverse-client")
 vi.mock("@azure/web-pubsub-client")
 
@@ -37,7 +39,7 @@ afterEach(async () => {
   cleanup()
   // Reset auth state and mock call history between tests. Implementations set
   // with vi.fn(impl) survive clearAllMocks; queued *Once values are cleared.
-  const auth0 = await import("@auth0/auth0-react")
-  ;(auth0 as unknown as { resetAuth0State: () => void }).resetAuth0State()
+  const auth = await import("./auth-mock")
+  auth.resetAuthState()
   vi.clearAllMocks()
 })

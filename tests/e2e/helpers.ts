@@ -15,11 +15,11 @@ export async function contentShot(page: Page, outPath: string) {
 }
 
 /**
- * Navigate to a page and handle the full Auth0 re-auth flow.
+ * Navigate to a page and handle the full Microsoft Entra External ID re-auth flow.
  *
- * The app uses Auth0 with cacheLocation:"memory", so every page load triggers
- * a fresh loginWithRedirect(). With saved Auth0 session cookies, the redirect
- * auto-authenticates but may show consent + welcome interstitial screens.
+ * On page load the app redirects to the Entra hosted login. With a saved Entra
+ * session, the redirect auto-authenticates but may show a consent / "stay signed
+ * in?" interstitial screen.
  */
 export async function gotoAuthenticated(page: Page, path = "/") {
   await page.goto(path)
@@ -33,37 +33,26 @@ export async function gotoAuthenticated(page: Page, path = "/") {
 
     // We're on the app — done!
     if (url.includes("localhost:5173")) {
-      // But Auth0 SDK might still trigger a redirect — wait a moment to be sure
+      // But MSAL might still trigger a redirect — wait a moment to be sure
       await page.waitForTimeout(2_000)
       const urlAfter = page.url()
       if (urlAfter.includes("localhost:5173")) {
         return
       }
-      // It redirected to Auth0, continue the loop
+      // It redirected to Entra, continue the loop
       continue
     }
 
-    // Auth0 consent page — click Accept
-    if (url.includes("auth0.com") && url.includes("/u/consent")) {
-      const primaryBtn = page.locator('[data-action-button-primary="true"]')
-      if (await primaryBtn.isVisible().catch(() => false)) {
-        await primaryBtn.click()
-        await page.waitForTimeout(2_000)
-        continue
-      }
-    }
-
-    // Auth0 welcome/interstitial page — look for a continue/accept button
-    if (url.includes("auth0.com")) {
-      // Try clicking any primary action button (Continue, Accept, etc.)
-      const primaryBtn = page.locator('[data-action-button-primary="true"]')
+    // Entra consent / "stay signed in?" interstitial — click the primary button
+    if (url.includes("ciamlogin.com")) {
+      const primaryBtn = page.locator('input[type="submit"], button[type="submit"]').first()
       if (await primaryBtn.isVisible().catch(() => false)) {
         await primaryBtn.click()
         await page.waitForTimeout(2_000)
         continue
       }
 
-      // Auth0 might auto-redirect — wait a bit
+      // Entra might auto-redirect — wait a bit
       await page.waitForTimeout(2_000)
     }
   }

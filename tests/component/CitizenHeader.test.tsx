@@ -1,6 +1,5 @@
 import { describe, it, expect } from "vitest"
-import { renderWithProviders, screen, userEvent } from "../setup/test-utils"
-import { useAuth0 } from "@auth0/auth0-react"
+import { renderWithProviders, screen, userEvent, useAuth } from "../setup/test-utils"
 import { CitizenHeader } from "@/components/citizen/CitizenHeader"
 
 describe("CitizenHeader", () => {
@@ -30,15 +29,15 @@ describe("CitizenHeader", () => {
     await userEvent.click(screen.getByText("TC").closest("button")!)
     const signOut = await screen.findByText("Sign out")
     await userEvent.click(signOut)
-    const logout = useAuth0().logout
+    const logout = useAuth().logout
     expect(logout).toHaveBeenCalled()
   })
 
   it("shows a Sign in button for an anonymous visitor", async () => {
-    renderWithProviders(<CitizenHeader />, { auth0: { isAuthenticated: false } })
+    renderWithProviders(<CitizenHeader />, { auth: { isAuthenticated: false } })
     expect(screen.queryByText("TC")).not.toBeInTheDocument()
     const signIn = screen.getByRole("button", { name: /Sign in/ })
     await userEvent.click(signIn)
-    expect(useAuth0().loginWithRedirect).toHaveBeenCalled()
+    expect(useAuth().loginWithRedirect).toHaveBeenCalled()
   })
 })

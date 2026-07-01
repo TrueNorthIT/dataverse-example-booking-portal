@@ -1,11 +1,11 @@
 import { useMemo } from "react"
-import { useAuth0 } from "@auth0/auth0-react"
 import { createClient } from "@truenorth-it/dataverse-client"
-import { apiOrigin } from "@/config/auth0"
+import { useAuth } from "@/auth/useAuth"
+import { apiOrigin } from "@/config/entra"
 
-/** Authenticated client — uses Auth0 JWT for /me and /all tier access. */
+/** Authenticated client — uses the Entra-issued OIDC JWT for /me and /all tier access. */
 export function useDataverse() {
-  const { getAccessTokenSilently } = useAuth0()
+  const { getAccessTokenSilently } = useAuth()
   return useMemo(
     () =>
       createClient({

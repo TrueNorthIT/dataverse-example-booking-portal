@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react"
 import { format, parseISO } from "date-fns"
 import { useQueryClient } from "@tanstack/react-query"
-import { useAuth0 } from "@auth0/auth0-react"
+import { useAuth } from "@/auth/useAuth"
 import { CalendarCheck, LogIn, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -46,7 +46,7 @@ export function CitizenBookingForm({
   const [selectedAddOns, setSelectedAddOns] = useState<Set<string>>(new Set())
   const [phase, setPhase] = useState<"confirm" | "pay">("confirm")
   const { name } = useCurrentUser()
-  const { isAuthenticated, loginWithRedirect } = useAuth0()
+  const { isAuthenticated, loginWithRedirect } = useAuth()
   const queryClient = useQueryClient()
   const createCitizenBooking = useCreateCitizenBooking()
   const { data: statuses } = useBookingStatuses()

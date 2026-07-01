@@ -1,6 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest"
-import { renderWithProviders, screen, userEvent, mockClient, waitFor } from "../setup/test-utils"
-import { useAuth0 } from "@auth0/auth0-react"
+import { renderWithProviders, screen, userEvent, mockClient, waitFor, useAuth } from "../setup/test-utils"
 import { CitizenBookingForm } from "@/components/citizen/CitizenBookingForm"
 import type { TimeSlot } from "@/hooks/useAvailability"
 
@@ -76,13 +75,13 @@ describe("CitizenBookingForm", () => {
         onCancel={vi.fn()}
         onBooked={onBooked}
       />,
-      { auth0: { isAuthenticated: false, user: undefined } },
+      { auth: { isAuthenticated: false, user: undefined } },
     )
 
     expect(screen.queryByRole("button", { name: "Confirm Booking" })).not.toBeInTheDocument()
     expect(screen.getByText(/browsing as a guest/i)).toBeInTheDocument()
     await user.click(await screen.findByRole("button", { name: /Sign in to book/ }))
-    expect(useAuth0().loginWithRedirect).toHaveBeenCalled()
+    expect(useAuth().loginWithRedirect).toHaveBeenCalled()
     expect(mockClient.me.create).not.toHaveBeenCalled()
     expect(onBooked).not.toHaveBeenCalled()
   })

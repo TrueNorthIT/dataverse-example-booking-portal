@@ -5,7 +5,7 @@ import {
   type DataChangeEvent,
   type RealtimeState,
 } from "@truenorth-it/dataverse-client"
-import { useAuth0 } from "@auth0/auth0-react"
+import { useAuth } from "@/auth/useAuth"
 import { useDataverse } from "@/hooks/useDataverse"
 import { logger } from "@/lib/logger"
 
@@ -33,7 +33,7 @@ const RealtimeContext = createContext<RealtimeContextValue>({
 })
 
 export function RealtimeProvider({ children }: { children: ReactNode }) {
-  const { isAuthenticated } = useAuth0()
+  const { isAuthenticated } = useAuth()
   const client = useDataverse()
   const queryClient = useQueryClient()
   const [events, setEvents] = useState<RealtimeEvent[]>([])

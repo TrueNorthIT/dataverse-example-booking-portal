@@ -3,7 +3,7 @@ import { Database } from "lucide-react"
 import { CitizenHeader } from "./CitizenHeader"
 import { GlobalProgressBar } from "@/components/common/GlobalProgressBar"
 import { ApiStatsPanel } from "@/components/common/ApiStatsPanel"
-import { dataverseBookingsUrl } from "@/config/auth0"
+import { dataverseBookingsUrl } from "@/config/entra"
 
 function PortalApiLogo({ className }: { className?: string }) {
   return (

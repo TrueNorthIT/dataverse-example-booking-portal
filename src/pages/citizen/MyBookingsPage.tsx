@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react"
 import { Link } from "react-router-dom"
-import { useAuth0 } from "@auth0/auth0-react"
+import { useAuth } from "@/auth/useAuth"
 import { isPast, parseISO } from "date-fns"
 import { useMyBookings } from "@/hooks/useMyBookings"
 import { useCancelCitizenBooking } from "@/hooks/useCitizenBookings"
@@ -30,7 +30,7 @@ export function MyBookingsPage() {
   const [tab, setTab] = useState<Tab>("upcoming")
   const [categoryFilter, setCategoryFilter] = useState<string | null>(null)
   const { name, isAuthenticated } = useCurrentUser()
-  const { loginWithRedirect } = useAuth0()
+  const { loginWithRedirect } = useAuth()
   const { data, isLoading } = useMyBookings()
   const cancelCitizenBooking = useCancelCitizenBooking()
   const { data: statuses } = useBookingStatuses()

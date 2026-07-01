@@ -1,6 +1,6 @@
 # Leeds City Council — Book a Service - Demo based on the services offered on LCC website
 
-A product-led booking portal for council services, built on Microsoft Dataverse. Citizens browse categories, pick a time slot, and book — all through a modern React frontend that talks to the [Dataverse Contact API](https://github.com/TrueNorthIT/dataverse-contact-api) (`citizenbooking` scope). The API handles authentication (Auth0), authorisation (RBAC + row-level scoping), and proxies all requests to Dataverse. The React app never touches Microsoft's APIs directly.
+A product-led booking portal for council services, built on Microsoft Dataverse. Citizens browse categories, pick a time slot, and book — all through a modern React frontend that talks to the [Dataverse Contact API](https://github.com/TrueNorthIT/dataverse-contact-api) (`citizenbooking` scope). The API handles authentication (Microsoft Entra External ID), authorisation (RBAC + row-level scoping), and proxies all requests to Dataverse. The React app never touches Microsoft's APIs directly.
 
 ## How It Works — End to End
 
@@ -10,18 +10,18 @@ This section traces exactly what the React app calls, what the API does, and wha
 
 ```
 ┌─────────────────┐         ┌─────────────────────────────┐         ┌──────────────┐
-│   Browser        │  Auth0  │   Dataverse Contact API      │  OAuth  │  Dataverse   │
+│   Browser        │  Entra  │   Dataverse Contact API      │  OAuth  │  Dataverse   │
 │   (React SPA)    │  JWT    │   /api/v2/citizenbooking/    │  S2S    │  Web API     │
 │                  │────────►│                              │────────►│  OData v4    │
-│  Auth0 PKCE      │         │  1. Validate Auth0 JWT       │         │              │
-│  login           │         │  2. Check RBAC permission    │         │  bookable    │
+│  Entra External  │         │  1. Validate Entra OIDC JWT  │         │              │
+│  ID (MSAL PKCE)  │         │  2. Check RBAC permission    │         │  bookable    │
 │                  │◄────────│  3. Resolve contact by email │◄────────│  resources   │
 │  TanStack Query  │  JSON   │  4. Query scoped by contact  │  JSON   │  bookings    │
 │  cache           │         │  5. Proxy to Dataverse       │         │  categories  │
 └─────────────────┘         └─────────────────────────────┘         └──────────────┘
 ```
 
-The React app authenticates citizens via **Auth0 PKCE**, gets a JWT, and sends it with every request to the API. The API validates the JWT, checks RBAC permissions, resolves the citizen's email to a Dataverse contact ID, and proxies the request to Dataverse using **server-to-server** (client credentials) authentication. Citizens never get a Dataverse token.
+The React app authenticates citizens via **Microsoft Entra External ID (MSAL PKCE)**, gets a JWT, and sends it with every request to the API. The API validates the Entra-issued OIDC JWT, checks RBAC permissions, resolves the citizen's email to a Dataverse contact ID, and proxies the request to Dataverse using **server-to-server** (client credentials) authentication. Citizens never get a Dataverse token.
 
 ### Dataverse Tables Used
 
@@ -176,7 +176,7 @@ There is no separate `me/booking` write: the app nests the venue booking under `
 ```
 
 **What the API does:**
-1. Validates the Auth0 JWT and checks the `servicebooking` **create** permission
+1. Validates the Entra-issued OIDC JWT and checks the `servicebooking` **create** permission
 2. Resolves the citizen's email → Dataverse contact ID and **auto-binds** `tn_Citizen` (via `createDefaults` — the caller never sends it)
 3. Deep-inserts `tn_booking`: creates a `bookableresourcebooking` (transforming `resource`/`bookingstatus` into `@odata.bind` lookups) and binds `tn_Booking` to it
 4. POSTs to Dataverse: `POST tn_citizenservicebookings` with the nested booking, returning the created record
@@ -223,7 +223,7 @@ For paid **Venue Hire**, a Stripe PaymentIntent (test mode) is confirmed first v
 | 3 | `useBookingStatuses` | `GET /api/v2/citizenbooking/public/status` | Status lookup |
 
 **What the API does for "My Bookings" (the `me` tier):**
-1. Validates Auth0 JWT
+1. Validates the Entra-issued OIDC JWT
 2. Extracts email from JWT
 3. Resolves email → Dataverse contact ID (via `contactJoinPath` config on `tn_citizenservicebooking`)
 4. Injects filter: `_tn_citizen_value eq {contactId}` — the citizen only sees **their own** records
@@ -358,7 +358,7 @@ npm run dev
 
 ### First Run
 
-1. Sign in with Auth0 (citizen account)
+1. Sign in with Microsoft Entra External ID (citizen account)
 2. Browse services on the home page
 3. Pick a category → pick a venue → pick a date → pick a time slot
 4. Confirm the booking
@@ -367,10 +367,10 @@ npm run dev
 ### Environment Variables
 
 ```env
-VITE_API_BASE_URL=https://api.dataverse-contact.tnapps.co.uk/api/v2
-VITE_AUTH0_DOMAIN=your-auth0-tenant.auth0.com
-VITE_AUTH0_CLIENT_ID=your-auth0-spa-client-id
-VITE_AUTH0_AUDIENCE=your-citizenbooking-api-audience
+VITE_API_BASE_URL=https://api.dataverse-contact.tnapps.co.uk/api/v2/citizenbooking
+VITE_ENTRA_TENANT_ID=00000000-0000-0000-0000-000000000000
+VITE_ENTRA_CLIENT_ID=your-spa-application-client-id
+VITE_ENTRA_API_SCOPE=api://<citizenbooking-api-app-id>/access_as_user
 ```
 
 ## Tech Stack
@@ -380,7 +380,7 @@ VITE_AUTH0_AUDIENCE=your-citizenbooking-api-audience
 | UI Framework | React 19 + TypeScript | Component model, ecosystem, type safety |
 | Build | Vite 7 | Fast HMR, ESM-native |
 | Styling | Tailwind CSS v4 + shadcn/ui | Utility-first, accessible primitives, no runtime CSS |
-| Auth | Auth0 SPA SDK | PKCE-based citizen authentication |
+| Auth | Microsoft Entra External ID (`@azure/msal-browser` + `@azure/msal-react`) | PKCE-based citizen authentication |
 | Data | TanStack React Query | Caching, background refetch, cache invalidation |
 | API | Dataverse Contact API (`citizenbooking` scope) | Secure proxy to Dataverse with RBAC + row-level scoping |
 | Routing | react-router-dom v7 | Standard React routing |
@@ -396,11 +396,11 @@ Unit, hook and component tests run on [Vitest](https://vitest.dev) + React Testi
 npm test            # run the hermetic suite (unit + hooks + components)
 npm run test:watch  # watch mode
 npm run test:coverage   # enforce coverage thresholds (90% lines/statements/functions, 85% branches)
-npm run test:e2e    # Playwright end-to-end (needs a running app + Auth0)
+npm run test:e2e    # Playwright end-to-end (needs a running app + Entra External ID)
 npm run test:live   # OPT-IN: hits real Dataverse using .env credentials (never part of CI/coverage)
 ```
 
-- **Hermetic by default.** The Auth0 SDK and the Dataverse Contact API client are mocked (`__mocks__/`, wired in `tests/setup/`), so `npm test` needs no network or secrets. Shared helpers live in `tests/setup/test-utils.tsx` (`renderWithProviders`, `mockClient`, `setAuth0State`).
+- **Hermetic by default.** The `useAuth()` MSAL adapter (`tests/setup/auth-mock.ts`) and the Dataverse Contact API client are mocked (wired in `tests/setup/`), so `npm test` needs no network or secrets. Shared helpers live in `tests/setup/test-utils.tsx` (`renderWithProviders`, `mockClient`, `setAuthState`).
 - **Where logic lives.** Booking/availability/pricing rules are pure functions in `src/lib/` (e.g. `availability.ts`, `slotGridLayout.ts`, `busyness.ts`, `venue.ts`, `bookings.ts`, `pricing.ts`) — unit-tested directly, with the React layer kept thin.
 - **Coverage scope.** Vendored `components/ui/*`, generated types, the app entry, and the realtime transport contexts (covered by E2E) are excluded from the coverage gate.
 - **`tests/live/`** is the old direct-Dataverse suite — kept as opt-in smoke tests, excluded from the default run and coverage.
@@ -422,7 +422,7 @@ This is a demo. For production, the main gaps are:
 | Area | Demo | Production |
 |------|------|------------|
 | Conflict detection | Client-side query before create (race condition possible) | Dataverse plugin (C#) on booking create — transactional check |
-| Authentication | Auth0 with demo personas | Auth0 with real citizen identity verification |
+| Authentication | Microsoft Entra External ID with demo personas | Microsoft Entra External ID with real citizen identity verification |
 | Capacity | Calendar-based per resource | Per-activity, per-day, integrated with staff rotas and closure calendars |
 | Real-time | Poll on page focus | SignalR via the API's real-time notifications (auto cache invalidation) |
 | Hosting | `localhost:5173` | Azure Static Web Apps, Vercel, or any CDN (it's just static files + API calls) |

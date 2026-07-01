@@ -22,7 +22,8 @@
     "test:e2e": "playwright test"
   },
   "dependencies": {
-    "@auth0/auth0-react": "^2.15.0",
+    "@azure/msal-browser": "^5.11.0",
+    "@azure/msal-react": "^5.4.2",
     "@azure/web-pubsub-client": "^1.0.2",
     "@hookform/resolvers": "^5.2.2",
     "@microsoft/signalr": "^10.0.0",

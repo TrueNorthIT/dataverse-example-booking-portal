@@ -13,7 +13,7 @@
                 <mxCell id="react-label" value="&lt;b&gt;React SPA&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#999999&quot; style=&quot;font-size:10px&quot;&gt;Citizen booking portal&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=top;resizable=0;points=[];strokeColor=none;fillColor=none;fontSize=12;" parent="1" vertex="1">
                     <mxGeometry x="55" y="260" width="130" height="40" as="geometry"/>
                 </mxCell>
-                <mxCell id="auth0-label" value="&lt;b&gt;Auth0&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#999999&quot; style=&quot;font-size:10px&quot;&gt;Citizen identity&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=top;resizable=0;points=[];strokeColor=none;fillColor=none;fontSize=12;" parent="1" vertex="1">
+                <mxCell id="auth0-label" value="&lt;b&gt;Entra External ID&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#999999&quot; style=&quot;font-size:10px&quot;&gt;Citizen identity&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=top;resizable=0;points=[];strokeColor=none;fillColor=none;fontSize=12;" parent="1" vertex="1">
                     <mxGeometry x="65" y="365" width="110" height="30" as="geometry"/>
                 </mxCell>
                 <mxCell id="api-group" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#81C784;arcSize=10;verticalAlign=top;" parent="1" vertex="1">

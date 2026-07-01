@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom"
-import { useAuth0 } from "@auth0/auth0-react"
+import { useAuth } from "@/auth/useAuth"
 import { Home, CalendarDays, LogOut, LogIn } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useCurrentUser } from "@/components/auth/AuthGuard"
@@ -20,7 +20,7 @@ const citizenNav = [
 
 export function CitizenHeader() {
   const { name, initials, email, isAuthenticated } = useCurrentUser()
-  const { logout, loginWithRedirect } = useAuth0()
+  const { logout, loginWithRedirect } = useAuth()
 
   return (
     <header className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">

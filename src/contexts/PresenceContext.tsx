@@ -7,7 +7,7 @@ import {
   useState,
   type ReactNode,
 } from "react"
-import { useAuth0 } from "@auth0/auth0-react"
+import { useAuth } from "@/auth/useAuth"
 import { WebPubSubClient } from "@azure/web-pubsub-client"
 import { logger } from "@/lib/logger"
 import { PRESENCE } from "@/lib/constants"
@@ -91,7 +91,7 @@ const PresenceContext = createContext<PresenceContextValue>({
 })
 
 export function PresenceProvider({ children }: { children: ReactNode }) {
-  const { user, isAuthenticated } = useAuth0()
+  const { user, isAuthenticated } = useAuth()
   const userId = user?.sub ?? ""
 
   const clientRef = useRef<WebPubSubClient | null>(null)

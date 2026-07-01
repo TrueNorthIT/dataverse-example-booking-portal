@@ -1,9 +1,8 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react"
-import { useAuth0 } from "@auth0/auth0-react"
+import { useAuth } from "@/auth/useAuth"
 import { LogOut } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useDataverse } from "@/hooks/useDataverse"
-import { apiBaseUrl } from "@/config/auth0"
 import "./contact-provision.css"
 
 interface ContactInfo {
@@ -25,7 +24,7 @@ type ProvisionState =
   | { status: "error"; message: string }
 
 export function ContactProvider({ children }: { children: ReactNode }) {
-  const { user } = useAuth0()
+  const { user } = useAuth()
   const client = useDataverse()
   const [state, setState] = useState<ProvisionState>({ status: "checking" })
 
@@ -59,8 +58,11 @@ export function ContactProvider({ children }: { children: ReactNode }) {
         return
       }
 
-      // 3. dataverseContact is null — create via public route
-      //    Show the animated logo for at least one full animation cycle (~2.5s)
+      // 3. dataverseContact is null — self-provision via the authenticated
+      //    /me/register endpoint. The API derives the email from the verified
+      //    token (we only pass name fields); the citizenbooking scope has
+      //    self-registration enabled. Show the animated logo for at least one
+      //    full animation cycle (~2.5s).
       const animStart = Date.now()
       const MIN_ANIM_MS = 2500
       if (!cancelled) setState({ status: "creating" })
@@ -69,14 +71,8 @@ export function ContactProvider({ children }: { children: ReactNode }) {
         const [firstname, ...rest] = (user!.name || user!.email!).split(" ")
         const lastname = rest.join(" ") || firstname
 
-        const createResp = await fetch(`${apiBaseUrl}/public/citizen`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ firstname, lastname, emailaddress1: user!.email }),
-        })
-        if (!createResp.ok) {
-          throw new Error(`Failed to create contact: ${createResp.status}`)
-        }
+        // POSTs to /me/register with the caller's bearer token (via the SDK).
+        await client.me.create("register", { firstname, lastname })
 
         // Re-fetch via whoami to get the canonical record
         const whoami2 = await client.me.whoami() as Record<string, unknown>
@@ -164,7 +160,7 @@ function ProvisioningScreen() {
 }
 
 function ErrorScreen({ message }: { message: string }) {
-  const { logout } = useAuth0()
+  const { logout } = useAuth()
 
   return (
     <div className="flex h-screen items-center justify-center bg-background">

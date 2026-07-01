@@ -4,7 +4,7 @@ Guidance for AI assistants working in this repository.
 
 ## What this is
 
-A citizen booking portal ("Leeds City Council — Book a Service") — a React 19 + TypeScript SPA that talks **only** to the [Dataverse Contact API](https://github.com/TrueNorthIT/dataverse-contact-api) (`citizenbooking` scope). The API handles Auth0 auth, RBAC, and proxies to Microsoft Dataverse; the SPA never calls Microsoft APIs directly. See `README.md` for the full per-page API walkthrough and `OVERVIEW.md` for the architecture summary.
+A citizen booking portal ("Leeds City Council — Book a Service") — a React 19 + TypeScript SPA that talks **only** to the [Dataverse Contact API](https://github.com/TrueNorthIT/dataverse-contact-api) (`citizenbooking` scope). The API handles Microsoft Entra External ID auth, RBAC, and proxies to Microsoft Dataverse; the SPA never calls Microsoft APIs directly. Citizens sign in via Entra External ID (MSAL PKCE, `@azure/msal-browser` + `@azure/msal-react`); the app's `useAuth()` adapter (`src/auth/useAuth.ts`) wraps MSAL. See `README.md` for the full per-page API walkthrough and `OVERVIEW.md` for the architecture summary.
 
 ## Commands
 
@@ -14,7 +14,7 @@ npm run build          # tsc -b (typecheck, incl. tests) + vite build
 npm run lint           # ESLint (flat config)
 npm test               # Vitest — hermetic unit/hook/component suite
 npm run test:coverage  # Vitest with the coverage gate
-npm run test:e2e       # Playwright (needs a running app + Auth0)
+npm run test:e2e       # Playwright (needs a running app + Entra External ID)
 npm run test:live      # OPT-IN: hits real Dataverse via .env (never in CI/coverage)
 npm run generate:types # Regenerate src/types/generated.ts from the API schema
 npm run schema|seed|clean   # Provision / seed / tear down demo Dataverse data
@@ -43,8 +43,8 @@ Before committing, run `npm run lint && npm run build && npm run test:coverage` 
 
 ## Testing
 
-- Vitest + React Testing Library (jsdom). The Auth0 SDK, the Dataverse client and Web PubSub are mocked in `__mocks__/` and activated in `tests/setup/vitest.setup.ts`.
-- Use the shared helpers in `tests/setup/test-utils.tsx`: `renderWithProviders`, `createHookWrapper`, `mockClient` (drive responses via `mockClient.public.list.mockResolvedValueOnce(...)`), and `setAuth0State`.
+- Vitest + React Testing Library (jsdom). The `useAuth()` adapter is mocked via `tests/setup/auth-mock.ts` (so no real `@azure/msal-*` imports run); the Dataverse client and Web PubSub are mocked in `__mocks__/` and all are activated in `tests/setup/vitest.setup.ts`.
+- Use the shared helpers in `tests/setup/test-utils.tsx`: `renderWithProviders`, `createHookWrapper`, `mockClient` (drive responses via `mockClient.public.list.mockResolvedValueOnce(...)`), and `setAuthState` (aliased `setAuth0State` for back-compat).
 - Coverage gate: 90% lines/statements/functions, 85% branches. Excluded: `components/ui/**`, generated types, `main.tsx`/`App.tsx`, the realtime contexts (covered by E2E) and `useDataverse.ts`.
 - `tests/live/` is the opt-in real-Dataverse suite — keep it out of the default run.
 

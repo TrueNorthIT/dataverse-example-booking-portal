@@ -69,8 +69,7 @@ describe("ContactProvider", () => {
           emailaddress1: "sarah@example.com",
         },
       })
-    const fetchMock = vi.fn().mockResolvedValue({ ok: true, status: 200 })
-    vi.stubGlobal("fetch", fetchMock)
+    mockClient.me.create.mockResolvedValueOnce({ data: {} })
 
     renderWithProviders(
       <ContactProvider>
@@ -83,9 +82,10 @@ describe("ContactProvider", () => {
       expect(screen.getByText("Setting up your account...")).toBeInTheDocument()
     })
     expect(screen.getByText("Creating your citizen record")).toBeInTheDocument()
-    expect(fetchMock).toHaveBeenCalledWith(
-      expect.stringContaining("/public/citizen"),
-      expect.objectContaining({ method: "POST" })
+    // Self-provisions via the authenticated /me/register endpoint (SDK create).
+    expect(mockClient.me.create).toHaveBeenCalledWith(
+      "register",
+      expect.objectContaining({ firstname: expect.any(String) })
     )
 
     // Advance past the MIN_ANIM_MS delay and let promises settle -> ready
@@ -95,9 +95,9 @@ describe("ContactProvider", () => {
     })
   })
 
-  it("shows the error screen when contact creation fetch fails", async () => {
+  it("shows the error screen when contact registration fails", async () => {
     mockClient.me.whoami.mockResolvedValue({ dataverseContact: null })
-    vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: false, status: 500 }))
+    mockClient.me.create.mockRejectedValueOnce(new Error("Registration failed"))
 
     renderWithProviders(
       <ContactProvider>
@@ -106,7 +106,7 @@ describe("ContactProvider", () => {
     )
 
     expect(await screen.findByText("Account Error")).toBeInTheDocument()
-    expect(screen.getByText(/Failed to create contact: 500/)).toBeInTheDocument()
+    expect(screen.getByText(/Registration failed/)).toBeInTheDocument()
   })
 
   it("does nothing when there is no user email", () => {

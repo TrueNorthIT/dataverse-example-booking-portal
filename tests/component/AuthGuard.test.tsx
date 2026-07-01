@@ -65,7 +65,7 @@ describe("AuthGuard", () => {
 })
 
 describe("useCurrentUser", () => {
-  it("derives name, email and initials from the Auth0 user", () => {
+  it("derives name, email and initials from the signed-in user", () => {
     setAuth0State({
       isAuthenticated: true,
       user: { sub: "x", name: "Sarah Johnson", email: "sarah@example.com" },
