@@ -1,9 +1,9 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react"
-import { useAuth0 } from "@auth0/auth0-react"
+import { useAuth } from "@/auth/useAuth"
 import { LogOut } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useDataverse } from "@/hooks/useDataverse"
-import { apiBaseUrl } from "@/config/auth0"
+import { apiBaseUrl } from "@/config/entra"
 import "./contact-provision.css"
 
 interface ContactInfo {
@@ -25,7 +25,7 @@ type ProvisionState =
   | { status: "error"; message: string }
 
 export function ContactProvider({ children }: { children: ReactNode }) {
-  const { user } = useAuth0()
+  const { user } = useAuth()
   const client = useDataverse()
   const [state, setState] = useState<ProvisionState>({ status: "checking" })
 
@@ -164,7 +164,7 @@ function ProvisioningScreen() {
 }
 
 function ErrorScreen({ message }: { message: string }) {
-  const { logout } = useAuth0()
+  const { logout } = useAuth()
 
   return (
     <div className="flex h-screen items-center justify-center bg-background">

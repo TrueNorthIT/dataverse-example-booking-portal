@@ -1,9 +1,9 @@
-import { useAuth0 } from "@auth0/auth0-react"
+import { useAuth } from "@/auth/useAuth"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 
 export function LoginPage() {
-  const { loginWithRedirect } = useAuth0()
+  const { loginWithRedirect } = useAuth()
 
   const handleLogin = () => {
     loginWithRedirect()

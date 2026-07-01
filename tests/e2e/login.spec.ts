@@ -2,18 +2,18 @@ import { test, expect } from "@playwright/test"
 import { gotoAuthenticated } from "./helpers"
 
 test.describe("Login flow", () => {
-  test("unauthenticated visit redirects to Auth0", async ({ browser }) => {
+  test("unauthenticated visit redirects to Microsoft Entra External ID", async ({ browser }) => {
     // Fresh context with no saved auth state
     const context = await browser.newContext()
     const page = await context.newPage()
 
     await page.goto("/")
 
-    // Auth0 redirect should happen — either we land on Auth0 or see the login page
+    // Entra redirect should happen — either we land on the Entra hosted login or the login page
     await expect(async () => {
       const url = page.url()
       expect(
-        url.includes("auth0.com") || url.includes("/login")
+        url.includes("ciamlogin.com") || url.includes("/login")
       ).toBeTruthy()
     }).toPass({ timeout: 15_000 })
 

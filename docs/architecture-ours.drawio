@@ -7,10 +7,10 @@
                 <mxCell id="title" value="&lt;b&gt;Architecture: Pure Dataverse Resource App&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=16;" parent="1" vertex="1">
                     <mxGeometry x="320" y="20" width="360" height="30" as="geometry"/>
                 </mxCell>
-                <mxCell id="citizen" value="&lt;b&gt;Citizen UI&lt;/b&gt;&lt;br&gt;(React SPA)&lt;br&gt;Auth0 login" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=13;verticalAlign=middle;arcSize=20;" parent="1" vertex="1">
+                <mxCell id="citizen" value="&lt;b&gt;Citizen UI&lt;/b&gt;&lt;br&gt;(React SPA)&lt;br&gt;Entra External ID login" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=13;verticalAlign=middle;arcSize=20;" parent="1" vertex="1">
                     <mxGeometry x="60" y="170" width="160" height="80" as="geometry"/>
                 </mxCell>
-                <mxCell id="api" value="&lt;b&gt;Contact Portal API&lt;/b&gt;&lt;br&gt;(middleware)&lt;br&gt;&lt;font color=&quot;#047857&quot;&gt;Auth0 JWT → Dataverse&lt;br&gt;scope-based access tiers&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;verticalAlign=middle;arcSize=20;" parent="1" vertex="1">
+                <mxCell id="api" value="&lt;b&gt;Contact Portal API&lt;/b&gt;&lt;br&gt;(middleware)&lt;br&gt;&lt;font color=&quot;#047857&quot;&gt;Entra JWT → Dataverse&lt;br&gt;scope-based access tiers&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;verticalAlign=middle;arcSize=20;" parent="1" vertex="1">
                     <mxGeometry x="320" y="155" width="200" height="110" as="geometry"/>
                 </mxCell>
                 <mxCell id="dataverse" value="&lt;b&gt;Dataverse&lt;/b&gt;&lt;br&gt;(D365 Field Service)&lt;br&gt;&lt;font color=&quot;#1e40af&quot;&gt;Single source of truth&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;verticalAlign=middle;arcSize=20;strokeWidth=2;" parent="1" vertex="1">

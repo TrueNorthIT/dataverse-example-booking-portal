@@ -8,13 +8,13 @@ export default defineConfig(({ mode }) => {
   // CLIENT_SECRET etc. Hermetic tests get deterministic defaults below.
   const fileEnv = loadEnv(mode ?? "test", process.cwd(), "")
 
-  // Defaults so importing src/config/auth0.ts (which calls `new URL(...)` at
+  // Defaults so importing src/config/entra.ts (which calls `new URL(...)` at
   // module load) never throws in a clean checkout without a .env file.
   const testEnv = {
     VITE_API_BASE_URL: "https://api.dataverse-contact.tnapps.co.uk/api/v2/citizenbooking",
-    VITE_AUTH0_DOMAIN: "test.auth0.com",
-    VITE_AUTH0_CLIENT_ID: "test-client-id",
-    VITE_AUTH0_AUDIENCE: "https://test-audience",
+    VITE_ENTRA_TENANT_ID: "00000000-0000-0000-0000-000000000000",
+    VITE_ENTRA_CLIENT_ID: "test-client-id",
+    VITE_ENTRA_API_SCOPE: "api://test-api-app-id/access_as_user",
     ...fileEnv,
   }
 
@@ -48,6 +48,8 @@ export default defineConfig(({ mode }) => {
           "src/contexts/RealtimeContext.tsx",
           "src/contexts/PresenceContext.tsx",
           "src/hooks/useDataverse.ts",
+          // MSAL wiring — mocked in the hermetic suite (see tests/setup/auth-mock.ts).
+          "src/auth/useAuth.ts",
           "src/vite-env.d.ts",
           "src/**/*.css",
         ],

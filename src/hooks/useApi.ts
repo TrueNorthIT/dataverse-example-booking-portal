@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient, type UseQueryOptions, type UseMutationOptions } from "@tanstack/react-query"
-import { useAuth0 } from "@auth0/auth0-react"
+import { useAuth } from "@/auth/useAuth"
 import { useDataverse, publicClient } from "./useDataverse"
 import type { DataverseClient, QueryOptions } from "@truenorth-it/dataverse-client"
 
@@ -75,7 +75,7 @@ export function useAuthenticatedList<T>(
   queryOptions?: Omit<UseQueryOptions<T[]>, "queryKey" | "queryFn">
 ) {
   const client = useDataverse()
-  const { isAuthenticated } = useAuth0()
+  const { isAuthenticated } = useAuth()
   return useQuery({
     queryKey,
     queryFn: async () => {

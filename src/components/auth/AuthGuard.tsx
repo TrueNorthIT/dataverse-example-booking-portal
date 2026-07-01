@@ -1,4 +1,4 @@
-import { useAuth0 } from "@auth0/auth0-react"
+import { useAuth } from "@/auth/useAuth"
 import { Skeleton } from "@/components/ui/skeleton"
 
 function LoadingSpinner() {
@@ -13,10 +13,10 @@ function LoadingSpinner() {
 }
 
 export function AuthGuard({ children }: { children: React.ReactNode }) {
-  const { isLoading, error } = useAuth0()
+  const { isLoading, error } = useAuth()
 
   // Public-browse mode: anonymous visitors can explore the portal. We only wait
-  // for Auth0 to finish initialising — we don't force a login redirect. The
+  // for MSAL to finish initialising — we don't force a login redirect. The
   // final "book" action is what gates on auth (see CitizenBookingForm).
   if (isLoading) {
     return <LoadingSpinner />
@@ -39,7 +39,7 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
 }
 
 export function useCurrentUser() {
-  const { user, isAuthenticated } = useAuth0()
+  const { user, isAuthenticated } = useAuth()
 
   return {
     isAuthenticated,

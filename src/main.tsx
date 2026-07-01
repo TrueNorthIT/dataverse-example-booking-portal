@@ -1,14 +1,46 @@
 import { StrictMode } from "react"
 import { createRoot } from "react-dom/client"
-import { Auth0Provider } from "@auth0/auth0-react"
-import { auth0Config } from "@/config/auth0"
+import { EventType, PublicClientApplication, type AuthenticationResult } from "@azure/msal-browser"
+import { MsalProvider } from "@azure/msal-react"
+import { entraConfig } from "@/config/entra"
 import App from "./App"
 import "./index.css"
 
-createRoot(document.getElementById("root")!).render(
-  <StrictMode>
-    <Auth0Provider {...auth0Config}>
-      <App />
-    </Auth0Provider>
-  </StrictMode>
-)
+const pca = new PublicClientApplication({
+  auth: {
+    clientId: entraConfig.clientId,
+    authority: entraConfig.authority,
+    knownAuthorities: entraConfig.knownAuthorities,
+    redirectUri: entraConfig.redirectUri,
+    postLogoutRedirectUri: entraConfig.redirectUri,
+  },
+  cache: { cacheLocation: "localStorage" },
+})
+
+// MSAL doesn't auto-set an active account on login — without this,
+// acquireTokenSilent fails after a redirect.
+pca.addEventCallback((event) => {
+  if (event.eventType === EventType.LOGIN_SUCCESS && event.payload) {
+    const account = (event.payload as AuthenticationResult).account
+    if (account) pca.setActiveAccount(account)
+  }
+})
+
+async function bootstrap() {
+  await pca.initialize()
+  await pca.handleRedirectPromise()
+  if (!pca.getActiveAccount()) {
+    const [first] = pca.getAllAccounts()
+    if (first) pca.setActiveAccount(first)
+  }
+
+  createRoot(document.getElementById("root")!).render(
+    <StrictMode>
+      <MsalProvider instance={pca}>
+        <App />
+      </MsalProvider>
+    </StrictMode>
+  )
+}
+
+void bootstrap()

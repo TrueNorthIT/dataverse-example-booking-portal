@@ -15,7 +15,7 @@
 | **Architecture** | Full-stack app (React SPA + API + Dataverse) | Headless API only (BYO frontend) |
 | **Scheduling engine** | Dynamics 365 Universal Resource Scheduling (URS) | Custom-built engine |
 | **Data store** | Dataverse (Power Platform) | Hapio cloud (proprietary) |
-| **Auth** | Auth0 (citizen) + Azure AD (admin) | API tokens (bearer) |
+| **Auth** | Microsoft Entra External ID (citizen) + Azure AD (admin) | API tokens (bearer) |
 | **Frontend** | Complete citizen portal (React 19) | React booking-flow component (optional) |
 | **Admin UI** | D365 Schedule Board + model-driven apps | Developer Portal only (hapio.app) — no business-user admin UI |
 | **Developer tooling** | TypeScript SDK, schema/seed scripts, E2E tests | Developer Portal, PHP SDK, React booking flow component, Postman collection, docs site |
@@ -111,7 +111,7 @@
 
 | Feature | Ours | Hapio | Notes |
 |---|---|---|---|
-| Citizen authentication | ✅ (Auth0) | ❌ | Hapio is API-only; auth is BYO |
+| Citizen authentication | ✅ (Microsoft Entra External ID) | ❌ | Hapio is API-only; auth is BYO |
 | Auto-provisioning contacts | ✅ | N/A | ContactProvider creates Dataverse contact on first login |
 | Role-based access | Partial | ❌ | We have citizen role; admin via D365 security roles |
 | API token auth | ✅ | ✅ | |
@@ -304,7 +304,7 @@ One backend, one source of truth, zero sync. Everything flows through Dataverse 
 
 ### What Hapio Does Better (Today)
 
-1. **Developer onboarding** — Hapio has excellent docs, a Postman collection, and a free tier. Our platform requires D365 setup + API deployment + Auth0 config.
+1. **Developer onboarding** — Hapio has excellent docs, a Postman collection, and a free tier. Our platform requires D365 setup + API deployment + Microsoft Entra External ID config.
 
 2. **API-first purity** — Hapio is truly headless with clean REST endpoints. Our API layer is middleware translating Dataverse operations, adding some overhead.
 

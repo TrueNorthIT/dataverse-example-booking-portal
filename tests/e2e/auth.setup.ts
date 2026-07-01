@@ -1,33 +1,32 @@
 import { test as setup, expect } from "@playwright/test"
 
-setup("authenticate via Auth0", async ({ page }) => {
-  const email = process.env.AUTH0_TEST_EMAIL
-  const password = process.env.AUTH0_TEST_PASSWORD
+setup("authenticate via Microsoft Entra External ID", async ({ page }) => {
+  const email = process.env.ENTRA_TEST_EMAIL
+  const password = process.env.ENTRA_TEST_PASSWORD
 
   if (!email || !password) {
     throw new Error(
-      "AUTH0_TEST_EMAIL and AUTH0_TEST_PASSWORD must be set in .env"
+      "ENTRA_TEST_EMAIL and ENTRA_TEST_PASSWORD must be set in .env"
     )
   }
 
-  // Navigate to app — AuthGuard will redirect to Auth0
+  // Navigate to app — signing in redirects to the Entra hosted login page
   await page.goto("/")
-  await page.waitForURL(/auth0\.com/, { timeout: 15_000 })
+  await page.waitForURL(/ciamlogin\.com/, { timeout: 15_000 })
 
-  // Fill Auth0 Universal Login form
-  await page.fill('input[name="username"], input[name="email"]', email)
-  await page.fill('input[name="password"]', password)
-  await page.getByRole("button", { name: "Continue", exact: true }).click()
+  // Fill the Entra External ID sign-in form
+  await page.fill('input[name="loginfmt"], input[type="email"]', email)
+  await page.getByRole("button", { name: /next|continue/i }).click({ timeout: 5_000 }).catch(() => {})
+  await page.fill('input[name="passwd"], input[type="password"]', password)
+  await page.getByRole("button", { name: /sign in|next|continue/i }).click()
 
-  // Auth0 may show a consent screen — accept it if it appears
+  // Entra may show a "stay signed in?" / consent screen — accept it if it appears
   try {
-    await page.waitForURL(/\/u\/consent/, { timeout: 5_000 })
-    // Click the Accept / Allow button on the consent page
     await page
-      .getByRole("button", { name: /accept|allow|authorize/i })
+      .getByRole("button", { name: /yes|accept|allow|authorize/i })
       .click({ timeout: 5_000 })
   } catch {
-    // No consent screen — already redirecting back
+    // No interstitial — already redirecting back
   }
 
   // Wait for redirect back to our app
